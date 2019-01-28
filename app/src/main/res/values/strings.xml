@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">PointWeather</string>
     <string name="title_activity_maps">Map</string>
+    <string name="weather_forecast">Weather forecast</string>
 </resources>
