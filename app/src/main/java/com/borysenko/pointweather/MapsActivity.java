@@ -11,12 +11,17 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.text.DecimalFormat;
+
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    String selectedLongitude;
+    String selectedLatitude;
+    DecimalFormat df = new DecimalFormat("0.00");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,14 +41,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         LatLng kyiv = new LatLng(50.45, 30.52);
-        mMap.addMarker(new MarkerOptions().position(kyiv).title("Marker"));
+        mMap.addMarker(new MarkerOptions().position(kyiv).title("Kyiv"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(kyiv));
+
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                MarkerOptions markerOptions = new MarkerOptions();
+                markerOptions.position(latLng);
+                markerOptions.title(latLng.latitude + " : " + latLng.longitude);
+                mMap.clear();
+                mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+                mMap.addMarker(markerOptions);
+                selectedLongitude = String.valueOf(df.format(latLng.longitude));
+                selectedLatitude = String.valueOf(df.format(latLng.latitude));
+            }
+        });
     }
 
     @OnClick(R.id.weather_forecast)
     public void weatherForecastButtonClicked() {
         Intent intent = new Intent(this, ForecastActivity.class);
+        intent.putExtra("EXTRA_LONGITUDE", selectedLongitude);
+        intent.putExtra("EXTRA_LATITUDE", selectedLatitude);
         startActivity(intent);
     }
-
 }
