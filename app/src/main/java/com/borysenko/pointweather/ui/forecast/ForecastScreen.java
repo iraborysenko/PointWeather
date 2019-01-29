@@ -1,5 +1,6 @@
 package com.borysenko.pointweather.ui.forecast;
 
+
 /**
  * Created by Android Studio.
  * User: Iryna
@@ -9,9 +10,14 @@ package com.borysenko.pointweather.ui.forecast;
 public interface ForecastScreen {
     interface View {
 
+        void setProgressBarVisible();
+
+        void setProgressBarInvisible();
     }
 
     interface Presenter {
+
+        void loadForecastFor5Days(String longitude, String latitude);
 
     }
 }
