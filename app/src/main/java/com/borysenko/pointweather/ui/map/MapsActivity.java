@@ -1,9 +1,13 @@
-package com.borysenko.pointweather;
+package com.borysenko.pointweather.ui.map;
 
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
+import com.borysenko.pointweather.R;
+import com.borysenko.pointweather.dagger.DaggerMapsScreenComponent;
+import com.borysenko.pointweather.dagger.MapsScreenModule;
+import com.borysenko.pointweather.ui.forecast.ForecastActivity;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -13,21 +17,30 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.text.DecimalFormat;
 
+import javax.inject.Inject;
+
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, MapsScreen.View {
 
     private GoogleMap mMap;
     String selectedLongitude;
     String selectedLatitude;
     DecimalFormat df = new DecimalFormat("0.00");
 
+    @Inject
+    MapsPresenter mapsPresenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         ButterKnife.bind(this);
+
+        DaggerMapsScreenComponent.builder()
+                .mapsScreenModule(new MapsScreenModule(this))
+                .build().inject(this);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
