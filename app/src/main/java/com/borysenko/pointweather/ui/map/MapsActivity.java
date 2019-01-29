@@ -42,7 +42,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .mapsScreenModule(new MapsScreenModule(this))
                 .build().inject(this);
 
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         assert mapFragment != null;
@@ -54,6 +53,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         LatLng kyiv = new LatLng(50.45, 30.52);
+        selectedLongitude = "30.52";
+        selectedLatitude = "50.45";
         mMap.addMarker(new MarkerOptions().position(kyiv).title("Kyiv"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(kyiv));
 
