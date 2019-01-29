@@ -2,7 +2,6 @@ package com.borysenko.pointweather.ui.forecast;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
-
 import com.borysenko.pointweather.model.ForecastRequest;
 import com.borysenko.pointweather.model.WeatherItem;
 import com.borysenko.pointweather.retrofit.API;
@@ -42,7 +41,9 @@ public class ForecastPresenter implements ForecastScreen.Presenter {
                                    @NonNull Response<ForecastRequest> response) {
                 ForecastRequest forecast = response.body();
                 assert forecast != null;
-
+                WeatherItem[] items = forecast.getWeatherItems();
+                mView.setCityData(forecast.getCityName(), forecast.getCityCountry());
+                mView.initRecyclerView(items);
                 mView.setProgressBarInvisible();
             }
 
@@ -51,7 +52,5 @@ public class ForecastPresenter implements ForecastScreen.Presenter {
                 Log.e("error", t.toString());
             }
         });
-
-
     }
 }

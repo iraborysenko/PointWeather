@@ -1,6 +1,8 @@
 package com.borysenko.pointweather.ui.forecast;
 
 
+import com.borysenko.pointweather.model.WeatherItem;
+
 /**
  * Created by Android Studio.
  * User: Iryna
@@ -13,6 +15,10 @@ public interface ForecastScreen {
         void setProgressBarVisible();
 
         void setProgressBarInvisible();
+
+        void initRecyclerView(WeatherItem[] items);
+
+        void setCityData(String cityName, String cityCountry);
     }
 
     interface Presenter {

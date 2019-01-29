@@ -4,15 +4,20 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.borysenko.pointweather.R;
+import com.borysenko.pointweather.adapters.WeatherRecyclerAdapter;
 import com.borysenko.pointweather.dagger.DaggerForecastScreenComponent;
 import com.borysenko.pointweather.dagger.ForecastScreenModule;
 import com.borysenko.pointweather.dagger.NetModule;
+import com.borysenko.pointweather.model.WeatherItem;
 
+import java.util.Locale;
 import java.util.Objects;
 
 import javax.inject.Inject;
@@ -30,10 +35,12 @@ import butterknife.ButterKnife;
 public class ForecastActivity extends AppCompatActivity implements ForecastScreen.View {
 
     @Inject
-    ForecastPresenter mapsPresenter;
+    ForecastPresenter forecastPresenter;
 
     @BindView(R.id.loading_progress_bar)
     ProgressBar mProgressBar;
+    @BindView(R.id.city)
+    TextView mCity;
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
@@ -51,7 +58,22 @@ public class ForecastActivity extends AppCompatActivity implements ForecastScree
         String longitude = getIntent().getStringExtra("EXTRA_LONGITUDE");
         String latitude = getIntent().getStringExtra("EXTRA_LATITUDE");
 
-        mapsPresenter.loadForecastFor5Days(longitude, latitude);
+        forecastPresenter.loadForecastFor5Days(longitude, latitude);
+    }
+
+    @Override
+    public void initRecyclerView(WeatherItem[] weatherItems) {
+        final RecyclerView mRecyclerView = findViewById(R.id.weather_recycler_view);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        final WeatherRecyclerAdapter mAdapter =
+                new WeatherRecyclerAdapter(weatherItems, getApplicationContext());
+        mRecyclerView.setAdapter(mAdapter);
+    }
+
+    @Override
+    public void setCityData(String cityName, String cityCountry) {
+        Locale obj = new Locale("", cityCountry);
+        mCity.setText(String.format("%s, %s", cityName, obj.getDisplayCountry(Locale.ENGLISH)));
     }
 
     @Override
@@ -63,5 +85,4 @@ public class ForecastActivity extends AppCompatActivity implements ForecastScree
     public void setProgressBarInvisible() {
         mProgressBar.setVisibility(View.INVISIBLE);
     }
-
 }

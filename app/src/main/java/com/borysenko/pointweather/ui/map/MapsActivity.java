@@ -1,8 +1,11 @@
 package com.borysenko.pointweather.ui.map;
 
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.borysenko.pointweather.R;
 import com.borysenko.pointweather.dagger.DaggerMapsScreenComponent;
@@ -12,10 +15,15 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -75,9 +83,45 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @OnClick(R.id.weather_forecast)
     public void weatherForecastButtonClicked() {
+//        findSpot();
         Intent intent = new Intent(this, ForecastActivity.class);
         intent.putExtra("EXTRA_LONGITUDE", selectedLongitude);
         intent.putExtra("EXTRA_LATITUDE", selectedLatitude);
         startActivity(intent);
+    }
+
+
+    void findSpot() {
+        Geocoder geoCoder = new Geocoder(this, Locale.ENGLISH);
+        try
+        {
+            String adderess = "Kiev";
+            List<Address> addresses = geoCoder.getFromLocationName(adderess, 5);
+            Log.e("first", String.valueOf(addresses.get(0).getLatitude()));
+            if (addresses.size() > 0)
+            {
+                Double lat = (double) (addresses.get(0).getLatitude());
+                Double lon = (double) (addresses.get(0).getLongitude());
+
+                Log.e("lat-long", "" + lat + "......." + lon);
+                final LatLng user = new LatLng(lat, lon);
+                /*used marker for show the location */
+                Marker hamburg = mMap.addMarker(new MarkerOptions()
+                        .position(user)
+                        .title(adderess)
+                        .icon(BitmapDescriptorFactory
+                                .fromResource(R.drawable.common_full_open_on_phone)));
+                // Move the camera instantly to hamburg with a zoom of 15.
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(user, 15));
+
+                // Zoom in, animating the camera.
+                mMap.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
+            }
+        }
+        catch (IOException e)
+        {
+            Log.e("error", "error");
+            e.printStackTrace();
+        }
     }
 }
