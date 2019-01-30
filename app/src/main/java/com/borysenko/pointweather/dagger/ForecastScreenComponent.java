@@ -13,7 +13,7 @@ import dagger.Component;
  * Time: 14:10
  */
 @Singleton
-@Component(modules = ForecastScreenModule.class)
+@Component(modules = {ContextModule.class, ForecastScreenModule.class})
 public interface ForecastScreenComponent {
     void inject(ForecastActivity forecastActivity);
 }

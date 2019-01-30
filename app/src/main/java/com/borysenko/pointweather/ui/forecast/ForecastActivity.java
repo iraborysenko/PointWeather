@@ -12,9 +12,9 @@ import android.widget.TextView;
 
 import com.borysenko.pointweather.R;
 import com.borysenko.pointweather.adapters.WeatherRecyclerAdapter;
+import com.borysenko.pointweather.dagger.ContextModule;
 import com.borysenko.pointweather.dagger.DaggerForecastScreenComponent;
 import com.borysenko.pointweather.dagger.ForecastScreenModule;
-import com.borysenko.pointweather.dagger.NetModule;
 import com.borysenko.pointweather.model.WeatherItem;
 
 import java.util.Locale;
@@ -52,7 +52,7 @@ public class ForecastActivity extends AppCompatActivity implements ForecastScree
 
         DaggerForecastScreenComponent.builder()
                 .forecastScreenModule(new ForecastScreenModule(this))
-                .netModule(new NetModule())
+                .contextModule(new ContextModule(this))
                 .build().inject(this);
 
         String longitude = getIntent().getStringExtra("EXTRA_LONGITUDE");

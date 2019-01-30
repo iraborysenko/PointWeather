@@ -1,6 +1,7 @@
 package com.borysenko.pointweather.dagger;
 
-import android.app.Application;
+
+import android.content.Context;
 
 import com.borysenko.pointweather.model.ForecastRequest;
 import com.borysenko.pointweather.model.WeatherItem;
@@ -11,6 +12,8 @@ import com.borysenko.pointweather.retrofit.gson.WeatherItemDeserializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
@@ -18,7 +21,10 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.Cache;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -29,8 +35,45 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Date: 29/01/19
  * Time: 14:41
  */
-@Module
+@Module(includes = ContextModule.class)
 public class NetModule {
+
+    @Provides
+    @Singleton
+    File provideCacheFile(Context context){
+        return new File(context.getCacheDir(), "HttpCache");
+    }
+
+    @Provides
+    @Singleton
+    Cache provideHttpCache(File cacheDirectory) {
+        int cacheSize = 10 * 1024 * 1024;
+        return new Cache(cacheDirectory, cacheSize);
+    }
+
+    @Provides
+    @Singleton
+    OkHttpClient provideOkHttpClient(Cache cache) {
+        OkHttpClient.Builder client = new OkHttpClient.Builder();
+        client.connectTimeout(50, TimeUnit.SECONDS);
+        client.readTimeout(55, TimeUnit.SECONDS);
+        client.writeTimeout(55, TimeUnit.SECONDS);
+        client.cache(cache);
+        client.addInterceptor(new Interceptor() {
+            @Override
+            public Response intercept(Chain chain) throws IOException {
+                try {
+                    return chain.proceed(chain.request());
+                } catch (Exception e) {
+                    Request offlineRequest = chain.request().newBuilder()
+                            .header("Cache-Control", "public, only-if-cached, max-stale=" + 60 * 60 * 24)
+                            .build();
+                    return chain.proceed(offlineRequest);
+                }
+            }
+        });
+        return client.build();
+    }
 
     @Provides
     @Singleton
@@ -39,24 +82,6 @@ public class NetModule {
                 .registerTypeAdapter(ForecastRequest.class, new ForecastRequestDeserializer())
                 .registerTypeAdapter(WeatherItem.class, new WeatherItemDeserializer())
                 .create();
-    }
-
-//    @Provides
-//    @Singleton
-//    Cache provideHttpCache(Application application) {
-//        int cacheSize = 10 * 1024 * 1024;
-//        return new Cache(application.getCacheDir(), cacheSize);
-//    }
-
-    @Provides
-    @Singleton
-    OkHttpClient provideOkHttpClient(/*Cache cache*/) {
-        OkHttpClient.Builder client = new OkHttpClient.Builder();
-        client.connectTimeout(100, TimeUnit.SECONDS);
-        client.readTimeout(55, TimeUnit.SECONDS);
-        client.writeTimeout(55, TimeUnit.SECONDS);
-//        client.cache(cache);
-        return client.build();
     }
 
     @Provides
