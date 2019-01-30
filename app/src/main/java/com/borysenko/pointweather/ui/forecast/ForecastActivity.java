@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.borysenko.pointweather.R;
 import com.borysenko.pointweather.adapters.WeatherRecyclerAdapter;
@@ -74,6 +75,23 @@ public class ForecastActivity extends AppCompatActivity implements ForecastScree
     public void setCityData(String cityName, String cityCountry) {
         Locale obj = new Locale("", cityCountry);
         mCity.setText(String.format("%s, %s", cityName, obj.getDisplayCountry(Locale.ENGLISH)));
+    }
+
+    @Override
+    public void toastNoDataFound() {
+        Toast.makeText(getApplicationContext(),
+                "No data found by your request", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void toastNoInternetConnection() {
+        Toast.makeText(getApplicationContext(),
+                "No internet connection available", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void closeActivity() {
+        finish();
     }
 
     @Override

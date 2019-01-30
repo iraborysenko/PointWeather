@@ -1,11 +1,12 @@
 package com.borysenko.pointweather.ui.forecast;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 import com.borysenko.pointweather.model.ForecastRequest;
 import com.borysenko.pointweather.model.WeatherItem;
 import com.borysenko.pointweather.retrofit.API;
 import com.borysenko.pointweather.retrofit.ApiInterface;
+
+import java.io.IOException;
 
 import javax.inject.Inject;
 
@@ -40,17 +41,42 @@ public class ForecastPresenter implements ForecastScreen.Presenter {
             public void onResponse(@NonNull Call<ForecastRequest>call,
                                    @NonNull Response<ForecastRequest> response) {
                 ForecastRequest forecast = response.body();
-                assert forecast != null;
-                WeatherItem[] items = forecast.getWeatherItems();
-                mView.setCityData(forecast.getCityName(), forecast.getCityCountry());
-                mView.initRecyclerView(items);
+                if (forecast != null) {
+                    WeatherItem[] items = forecast.getWeatherItems();
+                    mView.setCityData(forecast.getCityName(), forecast.getCityCountry());
+                    mView.initRecyclerView(items);
+
+                } else {
+                    if (!isOnline())
+                        mView.toastNoInternetConnection();
+                    else mView.toastNoDataFound();
+                    mView.closeActivity();
+                }
+
                 mView.setProgressBarInvisible();
             }
 
             @Override
             public void onFailure(@NonNull Call<ForecastRequest>call, @NonNull Throwable t) {
-                Log.e("error", t.toString());
+                t.printStackTrace();
+                mView.toastNoDataFound();
+                mView.setProgressBarInvisible();
+                mView.closeActivity();
             }
         });
+    }
+
+    static boolean isOnline() {
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            Process ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
+            int     exitValue = ipProcess.waitFor();
+            return (exitValue == 0);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) { e.printStackTrace(); }
+
+        return false;
     }
 }

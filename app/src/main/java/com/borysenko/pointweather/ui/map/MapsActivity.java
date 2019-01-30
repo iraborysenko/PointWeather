@@ -37,7 +37,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     String selectedLongitude;
     String selectedLatitude;
-    DecimalFormat df = new DecimalFormat("0.00");
+    DecimalFormat df = new DecimalFormat("0.0");
 
     @Inject
     MapsPresenter mapsPresenter;
@@ -82,7 +82,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         selectedLongitude = "30.52";
         selectedLatitude = "50.45";
         mMap.addMarker(new MarkerOptions().position(kyiv).title("Kyiv"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(kyiv));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(kyiv, 5));
 
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override

@@ -19,6 +19,12 @@ public interface ForecastScreen {
         void initRecyclerView(WeatherItem[] items);
 
         void setCityData(String cityName, String cityCountry);
+
+        void toastNoDataFound();
+
+        void toastNoInternetConnection();
+
+        void closeActivity();
     }
 
     interface Presenter {
