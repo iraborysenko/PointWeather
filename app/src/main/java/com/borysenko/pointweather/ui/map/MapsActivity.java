@@ -5,7 +5,10 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.KeyEvent;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.borysenko.pointweather.R;
 import com.borysenko.pointweather.dagger.DaggerMapsScreenComponent;
@@ -15,9 +18,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
@@ -27,6 +28,7 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -40,6 +42,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Inject
     MapsPresenter mapsPresenter;
 
+    @BindView(R.id.search_query)
+    EditText queryText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +54,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         DaggerMapsScreenComponent.builder()
                 .mapsScreenModule(new MapsScreenModule(this))
                 .build().inject(this);
+
+        queryText.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_DOWN &&
+                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    MapsActivity.this.findPlace(queryText.getText().toString());
+                    return true;
+                }
+                return false;
+            }
+        });
+
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -83,7 +101,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @OnClick(R.id.weather_forecast)
     public void weatherForecastButtonClicked() {
-//        findSpot();
         Intent intent = new Intent(this, ForecastActivity.class);
         intent.putExtra("EXTRA_LONGITUDE", selectedLongitude);
         intent.putExtra("EXTRA_LATITUDE", selectedLatitude);
@@ -91,37 +108,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-    void findSpot() {
+    void findPlace(String search) {
         Geocoder geoCoder = new Geocoder(this, Locale.ENGLISH);
         try
         {
-            String adderess = "Kiev";
-            List<Address> addresses = geoCoder.getFromLocationName(adderess, 5);
-            Log.e("first", String.valueOf(addresses.get(0).getLatitude()));
-            if (addresses.size() > 0)
-            {
-                Double lat = (double) (addresses.get(0).getLatitude());
-                Double lon = (double) (addresses.get(0).getLongitude());
+            List<Address> place = geoCoder.getFromLocationName(search, 5);
+            Double lat = place.get(0).getLatitude();
+            Double lon = place.get(0).getLongitude();
+            selectedLongitude = String.valueOf(df.format(place.get(0).getLongitude()));
+            selectedLatitude = String.valueOf(df.format(place.get(0).getLatitude()));
 
-                Log.e("lat-long", "" + lat + "......." + lon);
-                final LatLng user = new LatLng(lat, lon);
-                /*used marker for show the location */
-                Marker hamburg = mMap.addMarker(new MarkerOptions()
-                        .position(user)
-                        .title(adderess)
-                        .icon(BitmapDescriptorFactory
-                                .fromResource(R.drawable.common_full_open_on_phone)));
-                // Move the camera instantly to hamburg with a zoom of 15.
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(user, 15));
+            final LatLng user = new LatLng(lat, lon);
+            mMap.addMarker(new MarkerOptions()
+                    .position(user)
+                    .title(search));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(user, 5));
+            mMap.animateCamera(CameraUpdateFactory.zoomTo(5), 2000, null);
 
-                // Zoom in, animating the camera.
-                mMap.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
-            }
         }
         catch (IOException e)
         {
-            Log.e("error", "error");
             e.printStackTrace();
+            Toast.makeText(getApplicationContext(),
+                    "Choose a more accurate name", Toast.LENGTH_SHORT).show();
         }
     }
 }
