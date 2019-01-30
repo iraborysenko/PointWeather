@@ -17,8 +17,10 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:ems="10"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:inputType="textPersonName"
-        android:text="" />
+        android:hint="@string/search" />
 
     <Button
         android:id="@+id/weather_forecast"
