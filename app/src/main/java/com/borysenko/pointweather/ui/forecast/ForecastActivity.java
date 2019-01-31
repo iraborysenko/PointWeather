@@ -14,8 +14,8 @@ import android.widget.Toast;
 import com.borysenko.pointweather.R;
 import com.borysenko.pointweather.adapters.WeatherRecyclerAdapter;
 import com.borysenko.pointweather.dagger.ContextModule;
-import com.borysenko.pointweather.dagger.DaggerForecastScreenComponent;
-import com.borysenko.pointweather.dagger.ForecastScreenModule;
+import com.borysenko.pointweather.dagger.screens.DaggerForecastScreenComponent;
+import com.borysenko.pointweather.dagger.screens.ForecastScreenModule;
 import com.borysenko.pointweather.model.WeatherItem;
 
 import java.util.Locale;

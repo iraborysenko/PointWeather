@@ -11,8 +11,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.borysenko.pointweather.R;
-import com.borysenko.pointweather.dagger.DaggerMapsScreenComponent;
-import com.borysenko.pointweather.dagger.MapsScreenModule;
+import com.borysenko.pointweather.dagger.screens.DaggerMapsScreenComponent;
+import com.borysenko.pointweather.dagger.screens.MapsScreenModule;
 import com.borysenko.pointweather.ui.forecast.ForecastActivity;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -78,9 +78,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        LatLng kyiv = new LatLng(50.45, 30.52);
+        LatLng kyiv = new LatLng(50.43, 30.52);
         selectedLongitude = "30.52";
-        selectedLatitude = "50.45";
+        selectedLatitude = "50.43";
         mMap.addMarker(new MarkerOptions().position(kyiv).title("Kyiv"));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(kyiv, 5));
 
@@ -112,7 +112,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Geocoder geoCoder = new Geocoder(this, Locale.ENGLISH);
         try
         {
-            List<Address> place = geoCoder.getFromLocationName(search, 5);
+            List<Address> place = geoCoder.getFromLocationName(search, 2);
             Double lat = place.get(0).getLatitude();
             Double lon = place.get(0).getLongitude();
             selectedLongitude = String.valueOf(df.format(place.get(0).getLongitude()));

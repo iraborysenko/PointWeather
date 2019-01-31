@@ -1,5 +1,6 @@
-package com.borysenko.pointweather.dagger;
+package com.borysenko.pointweather.dagger.screens;
 
+import com.borysenko.pointweather.dagger.NetModule;
 import com.borysenko.pointweather.ui.forecast.ForecastScreen;
 
 import dagger.Module;

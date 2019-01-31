@@ -1,4 +1,4 @@
-package com.borysenko.pointweather.dagger;
+package com.borysenko.pointweather.dagger.screens;
 
 import com.borysenko.pointweather.ui.map.MapsScreen;
 
