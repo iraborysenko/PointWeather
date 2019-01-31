@@ -38,6 +38,7 @@ public class WeatherRecyclerAdapter extends RecyclerView.Adapter<WeatherRecycler
         @BindView(R.id.curr_temperature) TextView mCurrTemperature;
         @BindView(R.id.pressure) TextView mPressure;
         @BindView(R.id.humidity) TextView mHumidity;
+        @BindView(R.id.cloudiness) TextView mCloudiness;
         @BindView(R.id.weather_description) TextView mWeatherDescription;
         @BindView(R.id.wind_speed) TextView mWindSpeed;
         @BindView(R.id.wind_deg) TextView mWindDeg;
@@ -82,12 +83,15 @@ public class WeatherRecyclerAdapter extends RecyclerView.Adapter<WeatherRecycler
                 .into(movieViewHolder.mWeatherIcon);
 
         movieViewHolder.mDate.setText(item.getDate());
-        movieViewHolder.mCurrTemperature.setText(item.getCurrTemperature());
-        movieViewHolder.mPressure.setText(item.getPressure());
-        movieViewHolder.mHumidity.setText(item.getHumidity());
+        movieViewHolder.mCurrTemperature.setText(String.format("%s ℃", item.getCurrTemperature()));
+        movieViewHolder.mPressure.setText(String.format("%shPa", item.getPressure()));
+        movieViewHolder.mHumidity.setText(String.format("H: %s%%", item.getHumidity()));
+        movieViewHolder.mCloudiness.setText(String.format("C: %s%%", item.getCloudiness()));
         movieViewHolder.mWeatherDescription.setText(item.getWeatherDescription());
-        movieViewHolder.mWindSpeed.setText(item.getWindSpeed());
+        movieViewHolder.mWindSpeed.setText(String.format("%sm/s", item.getWindSpeed()));
         movieViewHolder.mWindDeg.setText(item.getWindDeg());
+        movieViewHolder.itemView.setBackgroundColor(mContext.getResources()
+                .getColor(R.color.colorLightGrey));
     }
 
     @Override

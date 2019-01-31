@@ -12,29 +12,24 @@ public class WeatherItem {
     private String currTemperature;
     private String pressure;
     private String humidity;
-    private String weatherId;
-    private String weatherMain;
     private String weatherDescription;
     private String weatherIconId;
-    private String clouds;
+    private String cloudiness;
     private String windSpeed;
     private String windDeg;
 
     public WeatherItem(String date,
                        String currTemperature, String pressure, String humidity,
-                       String weatherId, String weatherMain,
                        String weatherDescription, String weatherIconId,
-                       String clouds,
+                       String cloudiness,
                        String windSpeed, String windDeg) {
         this.date = date;
         this.currTemperature = currTemperature;
         this.pressure = pressure;
         this.humidity = humidity;
-        this.weatherId = weatherId;
-        this.weatherMain = weatherMain;
         this.weatherDescription = weatherDescription;
         this.weatherIconId = weatherIconId;
-        this.clouds = clouds;
+        this.cloudiness = cloudiness;
         this.windSpeed = windSpeed;
         this.windDeg = windDeg;
     }
@@ -55,14 +50,6 @@ public class WeatherItem {
         return humidity;
     }
 
-    public String getWeatherId() {
-        return weatherId;
-    }
-
-    public String getWeatherMain() {
-        return weatherMain;
-    }
-
     public String getWeatherDescription() {
         return weatherDescription;
     }
@@ -71,8 +58,8 @@ public class WeatherItem {
         return weatherIconId;
     }
 
-    public String getClouds() {
-        return clouds;
+    public String getCloudiness() {
+        return cloudiness;
     }
 
     public String getWindSpeed() {
