@@ -10,9 +10,11 @@ package com.borysenko.pointweather.ui.map;
 public interface MapsScreen {
     interface View {
 
+        void findPlace(String query);
     }
 
     interface Presenter {
 
+        void getEnteredData(String inputString);
     }
 }

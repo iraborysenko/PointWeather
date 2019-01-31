@@ -38,6 +38,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     String selectedLongitude;
     String selectedLatitude;
     DecimalFormat df = new DecimalFormat("0.0");
+    //using "0.0" it's easier to match at the same point in offline mode
 
     @Inject
     MapsPresenter mapsPresenter;
@@ -60,13 +61,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (event.getAction() == KeyEvent.ACTION_DOWN &&
                         (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                    MapsActivity.this.findPlace(queryText.getText().toString());
+                    mapsPresenter.getEnteredData(queryText.getText().toString());
                     return true;
                 }
                 return false;
             }
         });
-
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -78,10 +78,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        LatLng kyiv = new LatLng(50.43, 30.52);
-        selectedLongitude = "30.52";
-        selectedLatitude = "50.43";
-        mMap.addMarker(new MarkerOptions().position(kyiv).title("Kyiv"));
+        Double defaultLon = 30.52;
+        Double defaultLat = 50.43;
+        LatLng kyiv = new LatLng(defaultLat, defaultLon);
+        selectedLongitude = String.valueOf(defaultLon);
+        selectedLatitude = String.valueOf(defaultLat);
+        mMap.addMarker(new MarkerOptions().position(kyiv));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(kyiv, 5));
 
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
@@ -89,7 +91,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onMapClick(LatLng latLng) {
                 MarkerOptions markerOptions = new MarkerOptions();
                 markerOptions.position(latLng);
-                markerOptions.title(latLng.latitude + " : " + latLng.longitude);
                 mMap.clear();
                 mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
                 mMap.addMarker(markerOptions);
@@ -107,30 +108,44 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         startActivity(intent);
     }
 
-
-    void findPlace(String search) {
+    @Override
+    public void findPlace(String search) {
+        // Geocoder works some time after rebooting. At least, at my device.
+        // Couldn't find free analogue service to fix it fast enough
         Geocoder geoCoder = new Geocoder(this, Locale.ENGLISH);
         try
         {
             List<Address> place = geoCoder.getFromLocationName(search, 2);
-            Double lat = place.get(0).getLatitude();
-            Double lon = place.get(0).getLongitude();
-            selectedLongitude = String.valueOf(df.format(place.get(0).getLongitude()));
-            selectedLatitude = String.valueOf(df.format(place.get(0).getLatitude()));
+            if (place.size()!=0) {
 
-            final LatLng user = new LatLng(lat, lon);
-            mMap.addMarker(new MarkerOptions()
-                    .position(user)
-                    .title(search));
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(user, 5));
-            mMap.animateCamera(CameraUpdateFactory.zoomTo(5), 2000, null);
+                Double lat = place.get(0).getLatitude();
+                Double lon = place.get(0).getLongitude();
+                selectedLongitude = String.valueOf(df.format(place.get(0).getLongitude()));
+                selectedLatitude = String.valueOf(df.format(place.get(0).getLatitude()));
 
+                final LatLng user = new LatLng(lat, lon);
+                mMap.clear();
+                mMap.addMarker(new MarkerOptions()
+                        .position(user)
+                        .title(search));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(user, 5));
+                mMap.animateCamera(CameraUpdateFactory.zoomTo(5), 2000, null);
+            } else showErrorMessage();
         }
         catch (IOException e)
         {
             e.printStackTrace();
-            Toast.makeText(getApplicationContext(),
-                    "Choose a more accurate name", Toast.LENGTH_SHORT).show();
+            showReloadRequestMessage();
         }
+    }
+
+    void showErrorMessage() {
+        Toast.makeText(getApplicationContext(),
+                "Choose more accurate name", Toast.LENGTH_SHORT).show();
+    }
+
+    void showReloadRequestMessage() {
+        Toast.makeText(getApplicationContext(),
+                "Need to reboot the device", Toast.LENGTH_SHORT).show();
     }
 }

@@ -16,4 +16,9 @@ public class MapsPresenter implements MapsScreen.Presenter {
     MapsPresenter(MapsScreen.View mView) {
         this.mView = mView;
     }
+
+    @Override
+    public void getEnteredData(String query) {
+        mView.findPlace(query);
+    }
 }
