@@ -84,11 +84,11 @@ public class WeatherRecyclerAdapter extends RecyclerView.Adapter<WeatherRecycler
 
         movieViewHolder.mDate.setText(item.getDate());
         movieViewHolder.mCurrTemperature.setText(String.format("%s ℃", item.getCurrTemperature()));
-        movieViewHolder.mPressure.setText(String.format("%shPa", item.getPressure()));
+        movieViewHolder.mPressure.setText(String.format("%s hPa", item.getPressure()));
         movieViewHolder.mHumidity.setText(String.format("H: %s%%", item.getHumidity()));
         movieViewHolder.mCloudiness.setText(String.format("C: %s%%", item.getCloudiness()));
         movieViewHolder.mWeatherDescription.setText(item.getWeatherDescription());
-        movieViewHolder.mWindSpeed.setText(String.format("%sm/s", item.getWindSpeed()));
+        movieViewHolder.mWindSpeed.setText(String.format("%s m/s", item.getWindSpeed()));
         movieViewHolder.mWindDeg.setText(item.getWindDeg());
         movieViewHolder.itemView.setBackgroundColor(mContext.getResources()
                 .getColor(R.color.colorLightGrey));
