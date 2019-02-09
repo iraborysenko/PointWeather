@@ -22,13 +22,21 @@
         android:inputType="textPersonName"
         android:hint="@string/search" />
 
-    <Button
+    <ImageButton
         android:id="@+id/weather_forecast"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/weather_forecast"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:src="@drawable/forecast"
+        android:layout_toRightOf="@id/weather_current"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
+        android:layout_toEndOf="@id/weather_current"
+        android:layout_margin="10dp" />
+
+    <ImageButton
+        android:id="@+id/weather_current"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:src="@drawable/current"
+        android:layout_alignParentBottom="true"
         android:layout_margin="10dp"/>
 </RelativeLayout>
