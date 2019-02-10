@@ -3,10 +3,12 @@ package com.borysenko.pointweather.dagger;
 
 import android.content.Context;
 
+import com.borysenko.pointweather.model.CurrentWeather;
 import com.borysenko.pointweather.model.ForecastRequest;
 import com.borysenko.pointweather.model.WeatherItem;
 import com.borysenko.pointweather.retrofit.API;
 import com.borysenko.pointweather.retrofit.ApiInterface;
+import com.borysenko.pointweather.retrofit.gson.CurrentWeatherDeserializer;
 import com.borysenko.pointweather.retrofit.gson.ForecastRequestDeserializer;
 import com.borysenko.pointweather.retrofit.gson.WeatherItemDeserializer;
 import com.google.gson.Gson;
@@ -81,6 +83,7 @@ public class NetModule {
         return new GsonBuilder()
                 .registerTypeAdapter(ForecastRequest.class, new ForecastRequestDeserializer())
                 .registerTypeAdapter(WeatherItem.class, new WeatherItemDeserializer())
+                .registerTypeAdapter(CurrentWeather.class, new CurrentWeatherDeserializer())
                 .create();
     }
 

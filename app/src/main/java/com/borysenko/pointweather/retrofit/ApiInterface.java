@@ -1,5 +1,6 @@
 package com.borysenko.pointweather.retrofit;
 
+import com.borysenko.pointweather.model.CurrentWeather;
 import com.borysenko.pointweather.model.ForecastRequest;
 
 import retrofit2.Call;
@@ -19,5 +20,10 @@ public interface ApiInterface {
     Call<ForecastRequest> getForecastFor5Days(@Query("lat") String latitude,
                                               @Query("lon") String longitude,
                                               @Query("appid") String apiKey);
-}
 
+    @GET("weather?units=metric")
+    Call<CurrentWeather> getCurrentWeather(@Query("lat") String latitude,
+                                           @Query("lon") String longitude,
+                                           @Query("appid") String apiKey);
+
+}

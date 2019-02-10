@@ -1,8 +1,17 @@
 package com.borysenko.pointweather.ui.current;
 
+import android.support.annotation.NonNull;
+
+import com.borysenko.pointweather.model.CurrentWeather;
+import com.borysenko.pointweather.retrofit.API;
 import com.borysenko.pointweather.retrofit.ApiInterface;
+import com.borysenko.pointweather.ui.forecast.ForecastPresenter;
 
 import javax.inject.Inject;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by Android Studio.
@@ -21,4 +30,33 @@ public class CurrentPresenter implements CurrentScreen.Presenter {
 
     @Inject
     ApiInterface apiInterface;
+
+    @Override
+    public void loadCurrentWeather(String longitude, String latitude) {
+        mView.setProgressBarVisible();
+        Call<CurrentWeather> call =
+                apiInterface.getCurrentWeather(latitude, longitude, API.WEATHER_MAP_KEY);
+        call.enqueue(new Callback<CurrentWeather>() {
+            @Override
+            public void onResponse(@NonNull Call<CurrentWeather>call,
+                                   @NonNull Response<CurrentWeather> response) {
+                CurrentWeather currentWeather = response.body();
+                if (currentWeather != null) {
+                    mView.displayCurrentWeather(currentWeather);
+                } else {
+                    if (!ForecastPresenter.isOnline())
+                        mView.toastNoInternetConnection();
+                    else mView.toastNoDataFound();
+                    mView.closeActivity();
+                }
+                mView.setProgressBarInvisible();
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<CurrentWeather>call, @NonNull Throwable t) {
+                t.printStackTrace();
+                mView.setProgressBarInvisible();
+            }
+        });
+    }
 }
