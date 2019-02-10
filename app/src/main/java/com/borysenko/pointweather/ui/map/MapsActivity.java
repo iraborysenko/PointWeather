@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.borysenko.pointweather.R;
 import com.borysenko.pointweather.dagger.screens.DaggerMapsScreenComponent;
 import com.borysenko.pointweather.dagger.screens.MapsScreenModule;
+import com.borysenko.pointweather.ui.current.CurrentActivity;
 import com.borysenko.pointweather.ui.forecast.ForecastActivity;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -103,6 +104,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @OnClick(R.id.weather_forecast)
     public void weatherForecastButtonClicked() {
         Intent intent = new Intent(this, ForecastActivity.class);
+        intent.putExtra("EXTRA_LONGITUDE", selectedLongitude);
+        intent.putExtra("EXTRA_LATITUDE", selectedLatitude);
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.weather_current)
+    public void weatherCurrentButtonClicked() {
+        Intent intent = new Intent(this, CurrentActivity.class);
         intent.putExtra("EXTRA_LONGITUDE", selectedLongitude);
         intent.putExtra("EXTRA_LATITUDE", selectedLatitude);
         startActivity(intent);
