@@ -15,6 +15,7 @@ import com.borysenko.pointweather.dagger.screens.DaggerMapsScreenComponent;
 import com.borysenko.pointweather.dagger.screens.MapsScreenModule;
 import com.borysenko.pointweather.ui.current.CurrentActivity;
 import com.borysenko.pointweather.ui.forecast.ForecastActivity;
+import com.borysenko.pointweather.utils.Messages;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -150,11 +151,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     void showErrorMessage() {
         Toast.makeText(getApplicationContext(),
-                "Choose more accurate name", Toast.LENGTH_SHORT).show();
+                Messages.OTHER_NAME, Toast.LENGTH_SHORT).show();
     }
 
     void showReloadRequestMessage() {
         Toast.makeText(getApplicationContext(),
-                "Need to reboot the device", Toast.LENGTH_SHORT).show();
+                Messages.NEED_REBOOT, Toast.LENGTH_SHORT).show();
     }
 }

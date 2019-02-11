@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.borysenko.pointweather.R;
 import com.borysenko.pointweather.model.WeatherItem;
-import com.borysenko.pointweather.retrofit.API;
+import com.borysenko.pointweather.utils.API;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
@@ -57,7 +57,7 @@ public class WeatherRecyclerAdapter extends RecyclerView.Adapter<WeatherRecycler
     @NonNull
     @Override
     public WeatherRecyclerAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
-                                                               int viewType) {
+                                                                int viewType) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.weather_recycler_item, parent, false);
 

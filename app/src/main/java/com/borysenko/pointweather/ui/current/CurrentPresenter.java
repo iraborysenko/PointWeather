@@ -3,9 +3,9 @@ package com.borysenko.pointweather.ui.current;
 import android.support.annotation.NonNull;
 
 import com.borysenko.pointweather.model.CurrentWeather;
-import com.borysenko.pointweather.retrofit.API;
+import com.borysenko.pointweather.utils.API;
 import com.borysenko.pointweather.retrofit.ApiInterface;
-import com.borysenko.pointweather.ui.forecast.ForecastPresenter;
+import com.borysenko.pointweather.utils.GeneralMethods;
 
 import javax.inject.Inject;
 
@@ -44,18 +44,21 @@ public class CurrentPresenter implements CurrentScreen.Presenter {
                 if (currentWeather != null) {
                     mView.displayCurrentWeather(currentWeather);
                 } else {
-                    if (!ForecastPresenter.isOnline())
+                    if (GeneralMethods.isOnline())
                         mView.toastNoInternetConnection();
                     else mView.toastNoDataFound();
                     mView.closeActivity();
                 }
+
                 mView.setProgressBarInvisible();
             }
 
             @Override
             public void onFailure(@NonNull Call<CurrentWeather>call, @NonNull Throwable t) {
                 t.printStackTrace();
+                mView.toastNoDataFound();
                 mView.setProgressBarInvisible();
+                mView.closeActivity();
             }
         });
     }

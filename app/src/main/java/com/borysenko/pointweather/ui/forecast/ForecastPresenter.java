@@ -3,10 +3,9 @@ package com.borysenko.pointweather.ui.forecast;
 import android.support.annotation.NonNull;
 import com.borysenko.pointweather.model.ForecastRequest;
 import com.borysenko.pointweather.model.WeatherItem;
-import com.borysenko.pointweather.retrofit.API;
+import com.borysenko.pointweather.utils.API;
 import com.borysenko.pointweather.retrofit.ApiInterface;
-
-import java.io.IOException;
+import com.borysenko.pointweather.utils.GeneralMethods;
 
 import javax.inject.Inject;
 
@@ -47,7 +46,7 @@ public class ForecastPresenter implements ForecastScreen.Presenter {
                     mView.initRecyclerView(items);
 
                 } else {
-                    if (!isOnline())
+                    if (GeneralMethods.isOnline())
                         mView.toastNoInternetConnection();
                     else mView.toastNoDataFound();
                     mView.closeActivity();
@@ -64,19 +63,5 @@ public class ForecastPresenter implements ForecastScreen.Presenter {
                 mView.closeActivity();
             }
         });
-    }
-
-    static boolean isOnline() {
-        Runtime runtime = Runtime.getRuntime();
-        try {
-            Process ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
-            int     exitValue = ipProcess.waitFor();
-            return (exitValue == 0);
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) { e.printStackTrace(); }
-
-        return false;
     }
 }

@@ -10,7 +10,7 @@ public class CurrentWeather {
 
     private String cityName;
     private String cityCountry;
-    private String dateOfCollection;
+    private int dateOfCollection;
     private String weatherDescription;
     private String weatherIconId;
     private float temperature;
@@ -24,7 +24,7 @@ public class CurrentWeather {
     private int timeOfSunset;
 
     public CurrentWeather(String cityName, String cityCountry,
-                          String dateOfCollection,
+                          int dateOfCollection,
                           String weatherDescription, String weatherIconId,
                           float temperature, int pressure, int humidity,
                           float windSpeed, int windDirection,
@@ -54,7 +54,7 @@ public class CurrentWeather {
         return cityCountry;
     }
 
-    public String getDateOfCollection() {
+    public int getDateOfCollection() {
         return dateOfCollection;
     }
 

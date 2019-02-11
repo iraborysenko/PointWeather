@@ -22,7 +22,7 @@ public class CurrentWeatherDeserializer implements JsonDeserializer {
 
         String cityName;
         String cityCountry;
-        String dateOfCollection;
+        int dateOfCollection;
         String weatherDescription;
         String weatherIconId;
         float temperature;
@@ -44,7 +44,7 @@ public class CurrentWeatherDeserializer implements JsonDeserializer {
         timeOfSunrise = sys.get("sunrise").getAsInt();
         timeOfSunset = sys.get("sunset").getAsInt();
 
-        dateOfCollection = jsonObject.get("dt").getAsString();
+        dateOfCollection = jsonObject.get("dt").getAsInt();
 
         JsonArray weatherArray = jsonObject.get("weather").getAsJsonArray();
         JsonObject weather = weatherArray.get(0).getAsJsonObject();

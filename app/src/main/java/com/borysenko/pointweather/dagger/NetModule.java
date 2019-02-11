@@ -6,7 +6,7 @@ import android.content.Context;
 import com.borysenko.pointweather.model.CurrentWeather;
 import com.borysenko.pointweather.model.ForecastRequest;
 import com.borysenko.pointweather.model.WeatherItem;
-import com.borysenko.pointweather.retrofit.API;
+import com.borysenko.pointweather.utils.API;
 import com.borysenko.pointweather.retrofit.ApiInterface;
 import com.borysenko.pointweather.retrofit.gson.CurrentWeatherDeserializer;
 import com.borysenko.pointweather.retrofit.gson.ForecastRequestDeserializer;

@@ -17,8 +17,9 @@ import com.borysenko.pointweather.dagger.ContextModule;
 import com.borysenko.pointweather.dagger.screens.DaggerForecastScreenComponent;
 import com.borysenko.pointweather.dagger.screens.ForecastScreenModule;
 import com.borysenko.pointweather.model.WeatherItem;
+import com.borysenko.pointweather.utils.GeneralMethods;
+import com.borysenko.pointweather.utils.Messages;
 
-import java.util.Locale;
 import java.util.Objects;
 
 import javax.inject.Inject;
@@ -38,10 +39,8 @@ public class ForecastActivity extends AppCompatActivity implements ForecastScree
     @Inject
     ForecastPresenter forecastPresenter;
 
-    @BindView(R.id.loading_progress_bar)
-    ProgressBar mProgressBar;
-    @BindView(R.id.city)
-    TextView mCity;
+    @BindView(R.id.loading_progress_bar) ProgressBar mProgressBar;
+    @BindView(R.id.city) TextView mCity;
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
@@ -73,20 +72,20 @@ public class ForecastActivity extends AppCompatActivity implements ForecastScree
 
     @Override
     public void setCityData(String cityName, String cityCountry) {
-        Locale obj = new Locale("", cityCountry);
-        mCity.setText(String.format("%s, %s", cityName, obj.getDisplayCountry(Locale.ENGLISH)));
+        mCity.setText(String.format("%s, %s", cityName,
+                GeneralMethods.convertCountryCodeToCountryName(cityCountry)));
     }
 
     @Override
     public void toastNoDataFound() {
         Toast.makeText(getApplicationContext(),
-                "No data found by your request", Toast.LENGTH_SHORT).show();
+                Messages.NO_DATA_FOUND, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void toastNoInternetConnection() {
         Toast.makeText(getApplicationContext(),
-                "No internet connection available", Toast.LENGTH_SHORT).show();
+                Messages.NO_CONNECTION, Toast.LENGTH_SHORT).show();
     }
 
     @Override

@@ -15,12 +15,13 @@ import com.borysenko.pointweather.dagger.ContextModule;
 import com.borysenko.pointweather.dagger.screens.CurrentScreenModule;
 import com.borysenko.pointweather.dagger.screens.DaggerCurrentScreenComponent;
 import com.borysenko.pointweather.model.CurrentWeather;
-import com.borysenko.pointweather.retrofit.API;
+import com.borysenko.pointweather.utils.API;
+import com.borysenko.pointweather.utils.GeneralMethods;
+import com.borysenko.pointweather.utils.Messages;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 
-import java.text.DecimalFormat;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -40,36 +41,20 @@ public class CurrentActivity extends AppCompatActivity implements CurrentScreen.
     @Inject
     CurrentPresenter currentPresenter;
 
-    @BindView(R.id.loading_curr_progress_bar)
-    ProgressBar mProgressBar;
-    @BindView(R.id.curr_weather_icon)
-    ImageView mCurrWeatherIcon;
-    @BindView(R.id.curr_city)
-    TextView mLocation;
-    @BindView(R.id.curr_date)
-    TextView mDate;
-    @BindView(R.id.curr_temperature)
-    TextView mTemperature;
-    @BindView(R.id.curr_description)
-    TextView mDescription;
-    @BindView(R.id.curr_wind_speed)
-    TextView mWindSpeed;
-    @BindView(R.id.curr_wind_direction)
-    TextView mWindDirection;
-    @BindView(R.id.curr_pressure)
-    TextView mPressure;
-    @BindView(R.id.curr_humidity)
-    TextView mHumidity;
-    @BindView(R.id.curr_cloudiness)
-    TextView mCloudiness;
-    @BindView(R.id.curr_rain_volume)
-    TextView mRainVolume;
-    @BindView(R.id.sunrise)
-    TextView mSunrise;
-    @BindView(R.id.sunset)
-    TextView mSunset;
-
-    DecimalFormat df = new DecimalFormat("0.0");
+    @BindView(R.id.loading_curr_progress_bar) ProgressBar mProgressBar;
+    @BindView(R.id.curr_weather_icon) ImageView mCurrWeatherIcon;
+    @BindView(R.id.curr_city) TextView mLocation;
+    @BindView(R.id.curr_date) TextView mDate;
+    @BindView(R.id.curr_temperature) TextView mTemperature;
+    @BindView(R.id.curr_description) TextView mDescription;
+    @BindView(R.id.curr_wind_speed) TextView mWindSpeed;
+    @BindView(R.id.curr_wind_direction) TextView mWindDirection;
+    @BindView(R.id.curr_pressure) TextView mPressure;
+    @BindView(R.id.curr_humidity) TextView mHumidity;
+    @BindView(R.id.curr_cloudiness) TextView mCloudiness;
+    @BindView(R.id.curr_rain_volume) TextView mRainVolume;
+    @BindView(R.id.sunrise) TextView mSunrise;
+    @BindView(R.id.sunset) TextView mSunset;
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
@@ -93,10 +78,12 @@ public class CurrentActivity extends AppCompatActivity implements CurrentScreen.
     @Override
     public void displayCurrentWeather(CurrentWeather currentWeather) {
 
-        String city = currentWeather.getCityName() + ", " + currentWeather.getCityCountry();
+        String city = currentWeather.getCityName() + ", "
+                + GeneralMethods.convertCountryCodeToCountryName(currentWeather.getCityCountry());
         mLocation.setText(city);
 
-        mDate.setText(String.valueOf(currentWeather.getDateOfCollection()));
+        mDate.setText(GeneralMethods.convertUnixToDate(
+                currentWeather.getDateOfCollection(), currentWeather.getCityCountry()));
 
         String imagePath = API.ICON_BASE + currentWeather.getWeatherIconId() + ".png";
         RequestOptions options = new RequestOptions()
@@ -113,8 +100,8 @@ public class CurrentActivity extends AppCompatActivity implements CurrentScreen.
         mTemperature.setText(String.format(Locale.getDefault(),
                 "%.1f ℃", currentWeather.getTemperature()));
         mDescription.setText(currentWeather.getWeatherDescription());
-        mWindSpeed.setText(df.format(currentWeather.getWindSpeed()));
-        mWindDirection.setText(convertDegreeToCardinalDirection(currentWeather.getWindDirection()));
+        mWindSpeed.setText(String.format(Locale.getDefault(),"%.1f", currentWeather.getWindSpeed()));
+        mWindDirection.setText(GeneralMethods.convertDegreeToCardinalDirection(currentWeather.getWindDirection()));
         mPressure.setText(String.format("%s hPa", currentWeather.getPressure()));
         mHumidity.setText(String.format("Humidity: %s%%", currentWeather.getHumidity()));
         mCloudiness.setText(String.format("Cloudiness: %s%%", currentWeather.getCloudiness()));
@@ -124,8 +111,10 @@ public class CurrentActivity extends AppCompatActivity implements CurrentScreen.
                     "Rain: %.1f mm", currentWeather.getRainVolume()));
         }
 
-        mSunrise.setText(String.valueOf(currentWeather.getTimeOfSunrise()));
-        mSunset.setText(String.valueOf(currentWeather.getTimeOfSunset()));
+        mSunrise.setText(String.format("Time of Sunrise: %s",
+                GeneralMethods.convertUnixToTime(currentWeather.getTimeOfSunrise(), currentWeather.getCityCountry())));
+        mSunset.setText(String.format("Time of Sunset: %s",
+                GeneralMethods.convertUnixToTime(currentWeather.getTimeOfSunset(), currentWeather.getCityCountry())));
 
     }
 
@@ -142,58 +131,17 @@ public class CurrentActivity extends AppCompatActivity implements CurrentScreen.
     @Override
     public void toastNoDataFound() {
         Toast.makeText(getApplicationContext(),
-                "No data found by your request", Toast.LENGTH_SHORT).show();
+                Messages.NO_DATA_FOUND, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void toastNoInternetConnection() {
         Toast.makeText(getApplicationContext(),
-                "No internet connection available", Toast.LENGTH_SHORT).show();
+                Messages.NO_CONNECTION, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void closeActivity() {
         finish();
-    }
-
-    private String convertDegreeToCardinalDirection(int directionInDegrees){
-        String cardinalDirection = null;
-        if((directionInDegrees >= 348.75) && (directionInDegrees <= 360) ||
-                (directionInDegrees >= 0) && (directionInDegrees <= 11.25)){
-            cardinalDirection = "N";
-        } else if( (directionInDegrees >= 11.25 ) && (directionInDegrees <= 33.75)){
-            cardinalDirection = "NNE";
-        } else if( (directionInDegrees >= 33.75 ) &&(directionInDegrees <= 56.25)){
-            cardinalDirection = "NE";
-        } else if( (directionInDegrees >= 56.25 ) && (directionInDegrees <= 78.75)){
-            cardinalDirection = "ENE";
-        } else if( (directionInDegrees >= 78.75 ) && (directionInDegrees <= 101.25) ){
-            cardinalDirection = "E";
-        } else if( (directionInDegrees >= 101.25) && (directionInDegrees <= 123.75) ){
-            cardinalDirection = "ESE";
-        } else if( (directionInDegrees >= 123.75) && (directionInDegrees <= 146.25) ){
-            cardinalDirection = "SE";
-        } else if( (directionInDegrees >= 146.25) && (directionInDegrees <= 168.75) ){
-            cardinalDirection = "SSE";
-        } else if( (directionInDegrees >= 168.75) && (directionInDegrees <= 191.25) ){
-            cardinalDirection = "S";
-        } else if( (directionInDegrees >= 191.25) && (directionInDegrees <= 213.75) ){
-            cardinalDirection = "SSW";
-        } else if( (directionInDegrees >= 213.75) && (directionInDegrees <= 236.25) ){
-            cardinalDirection = "SW";
-        } else if( (directionInDegrees >= 236.25) && (directionInDegrees <= 258.75) ){
-            cardinalDirection = "WSW";
-        } else if( (directionInDegrees >= 258.75) && (directionInDegrees <= 281.25) ){
-            cardinalDirection = "W";
-        } else if( (directionInDegrees >= 281.25) && (directionInDegrees <= 303.75) ){
-            cardinalDirection = "WNW";
-        } else if( (directionInDegrees >= 303.75) && (directionInDegrees <= 326.25) ){
-            cardinalDirection = "NW";
-        } else if( (directionInDegrees >= 326.25) && (directionInDegrees <= 348.75) ){
-            cardinalDirection = "NNW";
-        } else {
-            cardinalDirection = "?";
-        }
-        return cardinalDirection;
     }
 }
