@@ -13,9 +13,12 @@ import android.widget.TextView;
 import com.borysenko.pointweather.R;
 import com.borysenko.pointweather.model.WeatherItem;
 import com.borysenko.pointweather.utils.API;
+import com.borysenko.pointweather.utils.GeneralMethods;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -83,13 +86,13 @@ public class WeatherRecyclerAdapter extends RecyclerView.Adapter<WeatherRecycler
                 .into(movieViewHolder.mWeatherIcon);
 
         movieViewHolder.mDate.setText(item.getDate());
-        movieViewHolder.mCurrTemperature.setText(String.format("%s ℃", item.getCurrTemperature()));
+        movieViewHolder.mCurrTemperature.setText(String.format(Locale.getDefault(),"%.1f ℃", item.getCurrTemperature()));
         movieViewHolder.mPressure.setText(String.format("%s hPa", item.getPressure()));
         movieViewHolder.mHumidity.setText(String.format("H: %s%%", item.getHumidity()));
         movieViewHolder.mCloudiness.setText(String.format("C: %s%%", item.getCloudiness()));
         movieViewHolder.mWeatherDescription.setText(item.getWeatherDescription());
-        movieViewHolder.mWindSpeed.setText(String.format("%s m/s", item.getWindSpeed()));
-        movieViewHolder.mWindDeg.setText(item.getWindDeg());
+        movieViewHolder.mWindSpeed.setText(String.format(Locale.getDefault(),"%.1f m/s", item.getWindSpeed()));
+        movieViewHolder.mWindDeg.setText(GeneralMethods.convertDegreeToCardinalDirection(item.getWindDeg()));
         movieViewHolder.itemView.setBackgroundColor(mContext.getResources()
                 .getColor(R.color.colorLightGrey));
     }

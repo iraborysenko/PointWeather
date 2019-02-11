@@ -9,20 +9,21 @@ package com.borysenko.pointweather.model;
  */
 public class WeatherItem {
     private String date;
-    private String currTemperature;
-    private String pressure;
-    private String humidity;
+    private float currTemperature;
+    private int pressure;
+    private int humidity;
     private String weatherDescription;
     private String weatherIconId;
-    private String cloudiness;
-    private String windSpeed;
-    private String windDeg;
+    private int cloudiness;
+    private float windSpeed;
+    private int windDeg;
 
     public WeatherItem(String date,
-                       String currTemperature, String pressure, String humidity,
+                       float currTemperature,
+                       int pressure, int humidity,
                        String weatherDescription, String weatherIconId,
-                       String cloudiness,
-                       String windSpeed, String windDeg) {
+                       int cloudiness,
+                       float windSpeed, int windDeg) {
         this.date = date;
         this.currTemperature = currTemperature;
         this.pressure = pressure;
@@ -38,15 +39,15 @@ public class WeatherItem {
         return date;
     }
 
-    public String getCurrTemperature() {
+    public float getCurrTemperature() {
         return currTemperature;
     }
 
-    public String getPressure() {
+    public int getPressure() {
         return pressure;
     }
 
-    public String getHumidity() {
+    public int getHumidity() {
         return humidity;
     }
 
@@ -58,15 +59,15 @@ public class WeatherItem {
         return weatherIconId;
     }
 
-    public String getCloudiness() {
+    public int getCloudiness() {
         return cloudiness;
     }
 
-    public String getWindSpeed() {
+    public float getWindSpeed() {
         return windSpeed;
     }
 
-    public String getWindDeg() {
+    public int getWindDeg() {
         return windDeg;
     }
 }
